@@ -205,14 +205,16 @@
 
                     var i = 0;
                     var needsRelayout = typeof this.readingTimestamp == "undefined";
+                    var properties = new Array("timestamp", "illuminance", "x", "y", "z");
 
-                    for (property in this.reading) {
-                        if (property == 'timeStamp') {
-                            this.readingTimestamp = 'timeStamp: ' + round(this.reading.timeStamp, 3);
+                    for (var property in properties) {
+                        var propertyName = properties[property];
+                        if (propertyName == 'timestamp') {
+                            this.readingTimestamp = 'timestamp: ' + round(this.timestamp, 3);
                             this.app.notifyPath('sensorDataModel.' + this.id + '.readingTimestamp');
-                        } else {
+                        } else if (propertyName in this) {
                             var readingId = 'readingValue' + i++;
-                            this[readingId] = property + ': ' + round(this.reading[property], 3);
+                            this[readingId] = propertyName + ': ' + round(this[propertyName], 3);
                             this.app.notifyPath('sensorDataModel.' + this.id + '.' + readingId);
                         }
                     }

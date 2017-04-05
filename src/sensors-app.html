@@ -96,9 +96,9 @@
                 <paper-menu class="dropdown-content">
                     <paper-item>Ambient light</paper-item>
                     <paper-item>Accelerometer</paper-item>
-                    <paper-item>Linear acceleration</paper-item>
                     <paper-item>Gyroscope</paper-item>
                     <paper-item>Magnetometer</paper-item>
+                    <paper-item>AbsoluteOrientation</paper-item>
                 </paper-menu>
             </paper-dropdown-menu>
             <paper-input id="selectedFrequency" label="Frequency"></paper-input>
@@ -149,19 +149,6 @@
                     }
                     break;
 
-                case "Linear acceleration":
-                    if ('Accelerometer' in window) {
-                        if (options)
-                            options['includeGravity'] = false;
-                        else
-                            options = {
-                                includeGravity: false
-                            };
-
-                        sensorConstructor = Accelerometer;
-                    }
-                    break;
-
                 case "Gyroscope":
                     if ('Gyroscope' in window) {
                         sensorConstructor = Gyroscope;
@@ -171,6 +158,12 @@
                 case "Magnetometer":
                     if ('Magnetometer' in window) {
                         sensorConstructor = Magnetometer;
+                    }
+                    break;
+
+                case "AbsoluteOrientation":
+                    if ('AbsoluteOrientationSensor' in window) {
+                        sensorConstructor = AbsoluteOrientationSensor;
                     }
                     break;
                 }
@@ -205,7 +198,7 @@
 
                     var i = 0;
                     var needsRelayout = typeof this.readingTimestamp == "undefined";
-                    var properties = new Array("timestamp", "illuminance", "x", "y", "z");
+                    var properties = new Array("timestamp", "illuminance", "x", "y", "z", "quaternion");
 
                     for (var property in properties) {
                         var propertyName = properties[property];
@@ -214,7 +207,13 @@
                             this.app.notifyPath('sensorDataModel.' + this.id + '.readingTimestamp');
                         } else if (propertyName in this) {
                             var readingId = 'readingValue' + i++;
-                            this[readingId] = propertyName + ': ' + round(this[propertyName], 3);
+                            var value = null;
+                            if (!isNaN(this[propertyName])) {
+                                value = round(this[propertyName], 3);
+                            } else {
+                                value = this[propertyName].toString().replace(/,/g, '\n');
+                            }
+                            this[readingId] = propertyName + ': ' + value;
                             this.app.notifyPath('sensorDataModel.' + this.id + '.' + readingId);
                         }
                     }

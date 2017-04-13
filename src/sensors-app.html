@@ -76,7 +76,7 @@
                         <div class="pad">
                             <iron-label>Sensor type: [[item.name]]</iron-label>
                             <iron-label>Frequency hint: [[item.frequency]]</iron-label>
-                            <iron-label>Sensor state: [[item.state]]</iron-label>
+                            <iron-label>Sensor activated: [[item.activated]]</iron-label>
                             <span>[[item.readingTimestamp]]</span>
                             <span>[[item.readingValue0]]</span>
                             <span>[[item.readingValue1]]</span>
@@ -223,7 +223,7 @@
                 }
 
                 sensor.onerror = function () {
-                    this.app.notifyPath('sensorDataModel.' + this.id + '.state');
+                    this.app.notifyPath('sensorDataModel.' + this.id + '.activated');
                 };
                 sensor.onactivate = sensor.onerror;
 
@@ -266,7 +266,7 @@
                         this.sensorDataModel[id].active = false;
                     }
 
-                    this.notifyPath('sensorDataModel.' + id + '.state');
+                    this.notifyPath('sensorDataModel.' + id + '.activated');
                 } catch (e) {
                     // toast
                 }

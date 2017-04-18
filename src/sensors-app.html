@@ -81,6 +81,7 @@
                             <span>[[item.readingValue0]]</span>
                             <span>[[item.readingValue1]]</span>
                             <span>[[item.readingValue2]]</span>
+                            <span>[[item.readingValue3]]</span>
                         </div>
                         <paper-icon-button class="close" id="[[item.id]]" icon="clear" on-tap="removeSensor"></paper-icon-button>
                     </div>
@@ -206,15 +207,20 @@
                             this.readingTimestamp = 'timestamp: ' + round(this.timestamp, 3);
                             this.app.notifyPath('sensorDataModel.' + this.id + '.readingTimestamp');
                         } else if (propertyName in this) {
-                            var readingId = 'readingValue' + i++;
-                            var value = null;
-                            if (!isNaN(this[propertyName])) {
-                                value = round(this[propertyName], 3);
+                            if (propertyName == 'quaternion') {
+                              this["readingValue0"] = propertyName + ".X: " + round(this[propertyName][0], 3);
+                              this["readingValue1"] = propertyName + ".Y: " + round(this[propertyName][1], 3);
+                              this["readingValue2"] = propertyName + ".Z: " + round(this[propertyName][2], 3);
+                              this["readingValue3"] = propertyName + ".W: " + round(this[propertyName][3], 3);
+                              this.app.notifyPath('sensorDataModel.' + this.id + '.readingValue0');
+                              this.app.notifyPath('sensorDataModel.' + this.id + '.readingValue1');
+                              this.app.notifyPath('sensorDataModel.' + this.id + '.readingValue2');
+                              this.app.notifyPath('sensorDataModel.' + this.id + '.readingValue3');
                             } else {
-                                value = this[propertyName].toString().replace(/,/g, '\n');
+                              var readingId = 'readingValue' + i++;
+                              this[readingId] = propertyName + ': ' + round(this[propertyName], 3);
+                              this.app.notifyPath('sensorDataModel.' + this.id + '.' + readingId);
                             }
-                            this[readingId] = propertyName + ': ' + value;
-                            this.app.notifyPath('sensorDataModel.' + this.id + '.' + readingId);
                         }
                     }
 

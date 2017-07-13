@@ -97,6 +97,7 @@
                 <paper-menu class="dropdown-content">
                     <paper-item>Ambient light</paper-item>
                     <paper-item>Accelerometer</paper-item>
+                    <paper-item>LinearAcceleration</paper-item>
                     <paper-item>Gyroscope</paper-item>
                     <paper-item>Magnetometer</paper-item>
                     <paper-item>AbsoluteOrientation</paper-item>
@@ -148,6 +149,12 @@
                 case "Accelerometer":
                     if ('Accelerometer' in window) {
                         sensorConstructor = Accelerometer;
+                    }
+                    break;
+
+                case "LinearAcceleration":
+                    if ('LinearAccelerationSensor' in window) {
+                        sensorConstructor = LinearAccelerationSensor;
                     }
                     break;
 
